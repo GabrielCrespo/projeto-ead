@@ -2,7 +2,6 @@ package com.ead.authuser.service;
 
 import com.ead.authuser.dto.UserDto;
 import com.ead.authuser.model.User;
-import com.ead.authuser.specification.SpecificationTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
