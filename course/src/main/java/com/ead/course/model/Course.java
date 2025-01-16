@@ -56,9 +56,10 @@ public class Course implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Module> modules = new HashSet<>();
 
-    private String imgUrl;
+    private String imageUrl;
 
     public UUID getCourseId() {
         return courseId;
@@ -124,12 +125,12 @@ public class Course implements Serializable {
         this.userInstructor = userInstructor;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Set<Module> getModules() {
