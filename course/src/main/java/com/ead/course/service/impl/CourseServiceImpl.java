@@ -1,5 +1,6 @@
 package com.ead.course.service.impl;
 
+import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.dto.CourseRecordDto;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
@@ -73,9 +74,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> findById(UUID courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
-        if (courseOptional.isEmpty()) {
-            // exception!!
-        }
+        if (courseOptional.isEmpty()) throw new NotFoundExcepetion("Error: Course not found");
         return courseRepository.findById(courseId);
     }
 

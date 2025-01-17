@@ -1,5 +1,6 @@
 package com.ead.course.service.impl;
 
+import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.dto.ModuleRecordDto;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
@@ -60,11 +61,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public Optional<Module> findModuleIntoCourse(UUID courseId, UUID moduleId) {
         Optional<Module> moduleOptional = moduleRepository.findModuleIntoCourse(courseId, moduleId);
-
-        if (moduleOptional.isEmpty()) {
-            // exception
-        }
-
+        if (moduleOptional.isEmpty()) throw new NotFoundExcepetion("Error: Module not found");
         return moduleOptional;
     }
 
@@ -77,11 +74,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public Optional<Module> findById(UUID moduleId) {
         Optional<Module> moduleOptional = moduleRepository.findById(moduleId);
-
-        if (moduleOptional.isEmpty()) {
-            // exception
-        }
-
+        if (moduleOptional.isEmpty()) throw new NotFoundExcepetion("Error: Module not found");
         return moduleOptional;
     }
 }
