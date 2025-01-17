@@ -73,4 +73,15 @@ public class ModuleServiceImpl implements ModuleService {
         BeanUtils.copyProperties(moduleRecordDto, module);
         return moduleRepository.save(module);
     }
+
+    @Override
+    public Optional<Module> findById(UUID moduleId) {
+        Optional<Module> moduleOptional = moduleRepository.findById(moduleId);
+
+        if (moduleOptional.isEmpty()) {
+            // exception
+        }
+
+        return moduleOptional;
+    }
 }

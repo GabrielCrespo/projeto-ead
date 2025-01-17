@@ -20,4 +20,5 @@ public interface ModuleService {
 
     Module update(ModuleRecordDto moduleRecordDto, Module module);
 
+    Optional<Module> findById(UUID moduleId);
 }
