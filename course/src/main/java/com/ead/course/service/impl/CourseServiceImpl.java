@@ -1,7 +1,7 @@
 package com.ead.course.service.impl;
 
-import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.dto.CourseRecordDto;
+import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
 import com.ead.course.model.Module;
@@ -10,6 +10,9 @@ import com.ead.course.repository.LessonRepository;
 import com.ead.course.repository.ModuleRepository;
 import com.ead.course.service.CourseService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,8 +70,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findAll() {
-        return courseRepository.findAll();
+    public Page<Course> findAll(Specification<Course> specification, Pageable pageable) {
+        return courseRepository.findAll(specification, pageable);
     }
 
     @Override
