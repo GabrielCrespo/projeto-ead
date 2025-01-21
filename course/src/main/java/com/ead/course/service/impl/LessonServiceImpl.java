@@ -1,12 +1,15 @@
 package com.ead.course.service.impl;
 
-import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.dto.LessonRecordDto;
+import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.model.Lesson;
 import com.ead.course.model.Module;
 import com.ead.course.repository.LessonRepository;
 import com.ead.course.service.LessonService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,5 +58,10 @@ public class LessonServiceImpl implements LessonService {
     public Lesson update(LessonRecordDto lessonRecordDto, Lesson lesson) {
         BeanUtils.copyProperties(lessonRecordDto, lesson);
         return lessonRepository.save(lesson);
+    }
+
+    @Override
+    public Page<Lesson> findAllLessonsIntoModule(Specification<Lesson> specification, Pageable pageable) {
+        return lessonRepository.findAll(specification, pageable);
     }
 }

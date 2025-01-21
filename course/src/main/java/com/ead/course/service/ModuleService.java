@@ -3,6 +3,9 @@ package com.ead.course.service;
 import com.ead.course.dto.ModuleRecordDto;
 import com.ead.course.model.Course;
 import com.ead.course.model.Module;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +24,6 @@ public interface ModuleService {
     Module update(ModuleRecordDto moduleRecordDto, Module module);
 
     Optional<Module> findById(UUID moduleId);
+
+    Page<Module> findAllModulesIntoCourse(Specification<Module> specification, Pageable pageable);
 }

@@ -1,7 +1,7 @@
 package com.ead.course.service.impl;
 
-import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.dto.ModuleRecordDto;
+import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
 import com.ead.course.model.Module;
@@ -9,6 +9,9 @@ import com.ead.course.repository.LessonRepository;
 import com.ead.course.repository.ModuleRepository;
 import com.ead.course.service.ModuleService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,5 +79,10 @@ public class ModuleServiceImpl implements ModuleService {
         Optional<Module> moduleOptional = moduleRepository.findById(moduleId);
         if (moduleOptional.isEmpty()) throw new NotFoundExcepetion("Error: Module not found");
         return moduleOptional;
+    }
+
+    @Override
+    public Page<Module> findAllModulesIntoCourse(Specification<Module> specification, Pageable pageable) {
+        return moduleRepository.findAll(specification, pageable);
     }
 }
