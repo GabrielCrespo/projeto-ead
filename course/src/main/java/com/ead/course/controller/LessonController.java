@@ -6,6 +6,8 @@ import com.ead.course.service.LessonService;
 import com.ead.course.service.ModuleService;
 import com.ead.course.specification.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @RestController
 public class LessonController {
+
+    private static final Logger LOGGER = LogManager.getLogger(LessonController.class);
 
     private final ModuleService moduleService;
 
@@ -29,6 +33,7 @@ public class LessonController {
     @PostMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<Object> saveLesson(@PathVariable UUID moduleId,
                                              @RequestBody @Valid LessonRecordDto lessonRecordDto) {
+        LOGGER.debug("POST saveLesson lessonRecordDto received {}", lessonRecordDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(lessonService.save(lessonRecordDto, moduleService.findById(moduleId).get()));
 
@@ -48,6 +53,7 @@ public class LessonController {
 
     @DeleteMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<Object> deleteLesson(@PathVariable UUID moduleId, @PathVariable UUID lessonId) {
+        LOGGER.debug("DELETE deleteLesson lessonId received {}", lessonId);
         lessonService.delete(lessonService.findLessonIntoModule(moduleId, lessonId).get());
         return ResponseEntity.status(HttpStatus.OK).body("Lesson deleted Successfuly");
     }
@@ -56,6 +62,7 @@ public class LessonController {
     public ResponseEntity<Object> updateLesson(@PathVariable UUID moduleId,
                                                @PathVariable UUID lessonId,
                                                @RequestBody @Valid LessonRecordDto lessonRecordDto) {
+        LOGGER.debug("PUT updateLesson lessonRecordDto received {}", lessonRecordDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(lessonService.update(lessonRecordDto, lessonService.findLessonIntoModule(moduleId, lessonId).get()));
     }

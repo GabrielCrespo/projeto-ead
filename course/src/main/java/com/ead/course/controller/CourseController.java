@@ -5,6 +5,8 @@ import com.ead.course.model.Course;
 import com.ead.course.service.CourseService;
 import com.ead.course.specification.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.UUID;
 @RequestMapping("/courses")
 public class CourseController {
 
+    private static final Logger LOGGER = LogManager.getLogger(CourseController.class);
+
     private final CourseService courseService;
 
     public CourseController(CourseService courseService) {
@@ -26,7 +30,10 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Valid CourseRecordDto courseRecordDto) {
 
+        LOGGER.debug("POST saveCourse courseRecordDto received {}", courseRecordDto);
+
         if (courseService.existsByName(courseRecordDto.name())) {
+            LOGGER.warn("Course name {} is Already Taken", courseRecordDto.name());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Course Name is Already Taken!");
         }
 
@@ -45,6 +52,7 @@ public class CourseController {
 
     @DeleteMapping("/{courseId}")
     public ResponseEntity<Object> deleteCourse(@PathVariable UUID courseId) {
+        LOGGER.debug("DELETE deleteCourse courseId received {}", courseId);
         courseService.delete(courseService.findById(courseId).get());
         return ResponseEntity.status(HttpStatus.OK).body("Course deleted successfully");
     }
@@ -52,6 +60,7 @@ public class CourseController {
     @PutMapping("/{courseId}")
     public ResponseEntity<Object> updateCourse(@PathVariable UUID courseId,
                                                @RequestBody @Valid CourseRecordDto courseRecordDto) {
+        LOGGER.debug("PUT updateCourse courseRecordDto received {}", courseRecordDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(courseService.update(courseRecordDto, courseService.findById(courseId).get()));
     }
