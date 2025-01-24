@@ -60,6 +60,10 @@ public class Course implements Serializable {
 
     private String imageUrl;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private Set<CourseUser> courseUsers = new HashSet<>();
+
     public UUID getCourseId() {
         return courseId;
     }
@@ -138,5 +142,13 @@ public class Course implements Serializable {
 
     public void setModules(Set<Module> modules) {
         this.modules = modules;
+    }
+
+    public Set<CourseUser> getCourseUsers() {
+        return courseUsers;
+    }
+
+    public void setCourseUsers(Set<CourseUser> courseUsers) {
+        this.courseUsers = courseUsers;
     }
 }
