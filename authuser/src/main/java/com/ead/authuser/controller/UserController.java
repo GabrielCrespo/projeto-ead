@@ -1,7 +1,6 @@
 package com.ead.authuser.controller;
 
 import com.ead.authuser.dto.UserDto;
-import com.ead.authuser.exceptions.GlobalExceptionHandler;
 import com.ead.authuser.model.User;
 import com.ead.authuser.service.UserService;
 import com.ead.authuser.specification.SpecificationTemplate;
@@ -31,8 +30,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<User>> getAllUsers(SpecificationTemplate.UserSpec spec, Pageable pageable) {
-        Page<User> userPage = userService.findAll(spec, pageable);
+    public ResponseEntity<Page<User>> getAllUsers(SpecificationTemplate.UserSpec spec,
+                                                  Pageable pageable,
+                                                  @RequestParam(required = false) UUID courseId) {
+
+        Page<User> userPage = courseId != null
+                ? userService.findAll(SpecificationTemplate.userCourseId(courseId).and(spec), pageable)
+                : userService.findAll(spec, pageable);
 
         if (!userPage.isEmpty()) {
             for (User user : userPage.toList()) {
