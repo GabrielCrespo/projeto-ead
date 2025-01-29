@@ -1,7 +1,7 @@
-package com.ead.authuser.client;
+package com.ead.course.client;
 
-import com.ead.authuser.dto.CourseRecordDto;
-import com.ead.authuser.dto.ResponsePageDto;
+import com.ead.course.dto.ResponsePageDto;
+import com.ead.course.dto.UserRecordDto;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,22 +15,22 @@ import org.springframework.web.client.RestClientException;
 import java.util.UUID;
 
 @Component
-public class CourseClient {
+public class AuthUserClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(CourseClient.class);
-
-    @Value("${ead.api.url.course}")
-    private String baseUrlCourse;
+    private static final Logger LOGGER = LogManager.getLogger(AuthUserClient.class);
 
     private final RestClient restClient;
 
-    public CourseClient(RestClient.Builder restClientBuilder) {
+    @Value("${ead.api.url.authuser}")
+    private String baseUrlAuthUser;
+
+    public AuthUserClient(RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder.build();
     }
 
-    public Page<CourseRecordDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
+    public Page<UserRecordDto> getAllUsersByCourse(Pageable pageable, UUID courseId) {
 
-        String url = baseUrlCourse + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size="
+        String url = baseUrlAuthUser + "/users?courseId=" + courseId + "&page=" + pageable.getPageNumber() + "&size="
                 + pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replace(": ", ",");
 
         LOGGER.debug("Request URL: {}", url);
@@ -39,12 +39,15 @@ public class CourseClient {
             return restClient.get()
                     .uri(url)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<ResponsePageDto<CourseRecordDto>>() {
+                    .body(new ParameterizedTypeReference<ResponsePageDto<UserRecordDto>>() {
                     });
+
         } catch (RestClientException e) {
             LOGGER.error("Error Request RestClient with cause: {}", e.getMessage());
-            throw new RuntimeException("Error Request RestClient");
+            throw new RuntimeException("Error Request RestClient", e);
         }
 
     }
+
+
 }
