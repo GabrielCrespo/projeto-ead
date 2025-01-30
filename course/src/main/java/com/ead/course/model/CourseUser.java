@@ -34,11 +34,11 @@ public class CourseUser implements Serializable {
         this.course = course;
     }
 
-    public UUID getCourseId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setCourseId(UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
