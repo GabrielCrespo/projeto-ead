@@ -32,4 +32,5 @@ public interface UserService {
 
     Page<User> findAll(Specification<User> specification, Pageable pageable);
 
+    User registerInstructor(User user);
 }

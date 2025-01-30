@@ -100,4 +100,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Override
+    public User registerInstructor(User user) {
+        user.setUserType(UserType.INSTRUCTOR);
+        user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        return userRepository.save(user);
+    }
 }
