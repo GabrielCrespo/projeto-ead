@@ -2,11 +2,13 @@ package com.ead.authuser.controller;
 
 import com.ead.authuser.dto.UserDto;
 import com.ead.authuser.service.UserService;
+import com.ead.authuser.validation.UserValidator;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,24 +20,24 @@ public class AuthenticationController {
 
     private final UserService userService;
 
-    public AuthenticationController(UserService userService) {
+    private final UserValidator userValidator;
+
+    public AuthenticationController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
+        this.userValidator = userValidator;
     }
 
     @PostMapping("/signup")
     public ResponseEntity<Object> register(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
-                                           @JsonView(UserDto.UserView.RegistrationPost.class) UserDto dto) {
+                                           @JsonView(UserDto.UserView.RegistrationPost.class) UserDto dto,
+                                           Errors errors) {
 
         LOGGER.debug("POST register userRecordDto received {}", dto);
 
-        if (userService.existsByUserName(dto.username())) {
-            LOGGER.warn("Username {} is Already Taken", dto.username());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is already taken!");
-        }
+        userValidator.validate(dto, errors);
 
-        if (userService.existsByEmail(dto.email())) {
-            LOGGER.warn("Email {} is Already Taken", dto.username());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is already taken!");
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.getAllErrors());
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(dto));
