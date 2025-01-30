@@ -1,8 +1,12 @@
 package com.ead.authuser.service.impl;
 
+import com.ead.authuser.model.User;
+import com.ead.authuser.model.UserCourse;
 import com.ead.authuser.repository.UserCourseRepository;
 import com.ead.authuser.service.UserCourseService;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserCourseServiceImpl implements UserCourseService {
@@ -11,5 +15,15 @@ public class UserCourseServiceImpl implements UserCourseService {
 
     public UserCourseServiceImpl(UserCourseRepository userCourseRepository) {
         this.userCourseRepository = userCourseRepository;
+    }
+
+    @Override
+    public boolean existsByUserAndCourseId(User user, UUID courseId) {
+        return userCourseRepository.existsByUserAndCourseId(user, courseId);
+    }
+
+    @Override
+    public UserCourse save(UserCourse userCourse) {
+        return userCourseRepository.save(userCourse);
     }
 }
