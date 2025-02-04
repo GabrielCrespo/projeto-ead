@@ -1,5 +1,6 @@
 package com.ead.course.service.impl;
 
+import com.ead.course.client.AuthUserClient;
 import com.ead.course.dto.CourseRecordDto;
 import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.model.Course;
@@ -35,20 +36,26 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseUserRepository courseUserRepository;
 
+    private final AuthUserClient authUserClient;
+
     public CourseServiceImpl(
             CourseRepository courseRepository,
             ModuleRepository moduleRepository,
             LessonRepository lessonRepository,
-            CourseUserRepository courseUserRepository) {
+            CourseUserRepository courseUserRepository,
+            AuthUserClient authUserClient) {
         this.courseRepository = courseRepository;
         this.moduleRepository = moduleRepository;
         this.lessonRepository = lessonRepository;
         this.courseUserRepository = courseUserRepository;
+        this.authUserClient = authUserClient;
     }
 
     @Transactional
     @Override
     public void delete(Course course) {
+
+        boolean deleteCourseUserInAuthUser = false;
 
         List<Module> modules = moduleRepository.findAllModulesIntoCourse(course.getCourseId());
 
@@ -66,9 +73,15 @@ public class CourseServiceImpl implements CourseService {
 
         if (!courseUsers.isEmpty()) {
             courseUserRepository.deleteAll(courseUsers);
+            deleteCourseUserInAuthUser = true;
         }
 
         courseRepository.delete(course);
+
+        if (deleteCourseUserInAuthUser) {
+            authUserClient.deleteCouserUserInAuthUser(course.getCourseId());
+        }
+
     }
 
     @Override
