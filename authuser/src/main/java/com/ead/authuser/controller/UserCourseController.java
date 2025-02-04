@@ -38,6 +38,7 @@ public class UserCourseController {
     public ResponseEntity<Page<CourseRecordDto>> getAllCoursesByUsers(
             @PageableDefault(sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable UUID userId) {
+        userService.findById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(courseClient.getAllCoursesByUser(userId, pageable));
 
     }
