@@ -6,16 +6,18 @@ spring:
     name: ead-api-gateway
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: authuser-service
-            uri: lb://EAD-AUTHUSER-SERVICE
-            predicates:
-              - Path=/ead-authuser/**
-          - id: course-service
-            uri: lb://EAD-COURSE-SERVICE
-            predicates:
-              - Path=/ead-course/**
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: authuser-service
+          uri: lb://EAD-AUTHUSER-SERVICE
+          predicates:
+            - Path=/ead-authuser/**
+        - id: course-service
+          uri: lb://EAD-COURSE-SERVICE
+          predicates:
+            - Path=/ead-course/**
   output:
     ansi:
       enabled: ALWAYS
