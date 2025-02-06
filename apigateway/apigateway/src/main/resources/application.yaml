@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ead-api-gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: authuser-service
+            uri: lb://EAD-AUTHUSER-SERVICE
+            predicates:
+              - Path=/ead-authuser/**
+          - id: course-service
+            uri: lb://EAD-COURSE-SERVICE
+            predicates:
+              - Path=/ead-course/**
+  output:
+    ansi:
+      enabled: ALWAYS
+
+eureka:
+  client:
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
