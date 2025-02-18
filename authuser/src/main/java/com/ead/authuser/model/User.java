@@ -4,15 +4,12 @@ import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -62,14 +59,6 @@ public class User extends RepresentationModel<User> implements Serializable {
     //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<UserCourse> userCourse = new HashSet<>();
-
-    public UserCourse convertToUserCourse(UUID courseId) {
-        return new UserCourse(null, courseId, this);
-    }
 
     public UUID getUserId() {
         return userId;
@@ -159,11 +148,4 @@ public class User extends RepresentationModel<User> implements Serializable {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public Set<UserCourse> getUserCourse() {
-        return userCourse;
-    }
-
-    public void setUserCourse(Set<UserCourse> userCourse) {
-        this.userCourse = userCourse;
-    }
 }
