@@ -58,6 +58,13 @@ public class Course implements Serializable {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Module> modules = new HashSet<>();
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_COURSES_USERS",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users = new HashSet<>();
+
     private String imageUrl;
 
     public UUID getCourseId() {
@@ -140,4 +147,11 @@ public class Course implements Serializable {
         this.modules = modules;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 }

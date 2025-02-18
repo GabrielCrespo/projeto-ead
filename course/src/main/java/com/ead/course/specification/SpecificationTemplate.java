@@ -3,7 +3,9 @@ package com.ead.course.specification;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
 import com.ead.course.model.Module;
+import com.ead.course.model.User;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
@@ -33,6 +35,15 @@ public class SpecificationTemplate {
     public interface LessonSpec extends Specification<Lesson> {
     }
 
+    @And({
+            @Spec(path = "email", spec = Equal.class),
+            @Spec(path = "fullname", spec = LikeIgnoreCase.class),
+            @Spec(path = "userStatus", spec = Equal.class),
+            @Spec(path = "userType", spec = Equal.class)
+    })
+    public interface UserSpec extends Specification<User> {
+    }
+
     public static Specification<Module> moduleCourseId(final UUID courseId) {
         return ((root, query, criteriaBuilder) -> {
             query.distinct(true);
@@ -54,12 +65,23 @@ public class SpecificationTemplate {
     }
 
     public static Specification<Course> courseUserId(final UUID userId) {
-//        return (root, query, criteriaBuilder) -> {
-//            query.distinct(true);
-//            Join<Course, CourseUser> courseUserJoin = root.join("courseUsers");
-//            return criteriaBuilder.equal(courseUserJoin.get("userId"), userId);
-//        };
-        return null;
+        return ((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            Root<User> user = query.from(User.class);
+            Expression<Collection<Course>> courseUsers = user.get("courses");
+            return criteriaBuilder.and(criteriaBuilder.equal(user.get("userId"), userId),
+                    criteriaBuilder.isMember(root, courseUsers));
+        });
+    }
+
+    public static Specification<User> userCourseId(final UUID courseId) {
+        return ((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            Root<Course> course = query.from(Course.class);
+            Expression<Collection<User>> courseUsers = course.get("users");
+            return criteriaBuilder.and(criteriaBuilder.equal(course.get("courseId"), courseId),
+                    criteriaBuilder.isMember(root, courseUsers));
+        });
     }
 
 }
