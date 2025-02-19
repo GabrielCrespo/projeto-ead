@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(User user) {
         userRepository.delete(user);
+        userEventPublisher.publishUserEvent(user.toUserEventDto(ActionType.DELETE));
     }
 
     @Transactional
@@ -80,13 +81,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional
     @Override
     public User update(UserDto userDto, User user) {
+
         user.setFullname(userDto.fullname());
         user.setPhoneNumber(userDto.phoneNumber());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        userEventPublisher.publishUserEvent(user.toUserEventDto(ActionType.UPDATE));
+
+        return user;
 
     }
 
@@ -98,13 +105,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public User updateImage(UserDto userDto, User user) {
 
         user.setImgUrl(userDto.imageUrl());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        userEventPublisher.publishUserEvent(user.toUserEventDto(ActionType.UPDATE));
+
+        return user;
     }
 
     @Override
@@ -112,10 +124,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Transactional
     @Override
     public User registerInstructor(User user) {
         user.setUserType(UserType.INSTRUCTOR);
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userRepository.save(user);
+
+        user = userRepository.save(user);
+
+        userEventPublisher.publishUserEvent(user.toUserEventDto(ActionType.UPDATE));
+
+        return user;
     }
 }
