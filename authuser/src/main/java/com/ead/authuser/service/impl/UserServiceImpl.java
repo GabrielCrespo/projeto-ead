@@ -1,10 +1,12 @@
 package com.ead.authuser.service.impl;
 
 import com.ead.authuser.dto.UserDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.NotFoundException;
 import com.ead.authuser.model.User;
+import com.ead.authuser.publisher.UserEventPublisher;
 import com.ead.authuser.repository.UserRepository;
 import com.ead.authuser.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -25,8 +27,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private final UserEventPublisher userEventPublisher;
+
+    public UserServiceImpl(UserRepository userRepository, UserEventPublisher userEventPublisher) {
         this.userRepository = userRepository;
+        this.userEventPublisher = userEventPublisher;
     }
 
     @Override
@@ -47,6 +52,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    @Transactional
     @Override
     public User register(UserDto dto) {
 
@@ -57,7 +63,11 @@ public class UserServiceImpl implements UserService {
         user.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        userEventPublisher.publishUserEvent(user.toUserEventDto(ActionType.CREATE));
+        return user;
+
     }
 
     @Override

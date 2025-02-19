@@ -2,6 +2,7 @@ package com.ead.authuser.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,6 +26,8 @@ public class RabbitmqConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    @Value("${ead.broker.exchange.userEvent}")
+    private String exchangeUserEvent;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -48,4 +51,10 @@ public class RabbitmqConfig {
         objectMapper.registerModule(new JavaTimeModule());
         return new Jackson2JsonMessageConverter(objectMapper);
     }
+
+    @Bean
+    public FanoutExchange fanoutUserEvent() {
+        return new FanoutExchange(exchangeUserEvent);
+    }
+
 }
