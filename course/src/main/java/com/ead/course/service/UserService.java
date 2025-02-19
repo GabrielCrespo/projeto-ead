@@ -9,4 +9,5 @@ public interface UserService {
 
     Page<User> findAll(Specification<User> spec, Pageable pageable);
 
+    User save(User user);
 }

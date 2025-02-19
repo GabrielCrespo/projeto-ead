@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserDto userDto, User user) {
-        user.setFullName(userDto.fullName());
+        user.setFullname(userDto.fullname());
         user.setPhoneNumber(userDto.phoneNumber());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 

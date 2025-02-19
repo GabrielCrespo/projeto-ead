@@ -59,8 +59,8 @@ public class User implements Serializable {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullname(String fullName) {
+        this.fullname = fullName;
     }
 
     public String getUserStatus() {
@@ -68,7 +68,7 @@ public class User implements Serializable {
     }
 
     public void setUserStatus(String userStatus) {
-        userStatus = userStatus;
+        this.userStatus = userStatus;
     }
 
     public String getUserType() {

@@ -39,7 +39,7 @@ public class User extends RepresentationModel<User> implements Serializable {
     private String password;
 
     @Column(nullable = false, length = 150)
-    private String fullName;
+    private String fullname;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -106,12 +106,12 @@ public class User extends RepresentationModel<User> implements Serializable {
         this.password = password;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public UserStatus getUserStatus() {

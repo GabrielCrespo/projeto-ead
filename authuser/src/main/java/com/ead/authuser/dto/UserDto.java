@@ -32,7 +32,7 @@ public record UserDto(
 
         @NotBlank(message = "Fullname is mandatory", groups = {UserView.RegistrationPost.class, UserView.UserPut.class})
         @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
-        String fullName,
+        String fullname,
 
         @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
         String phoneNumber,
