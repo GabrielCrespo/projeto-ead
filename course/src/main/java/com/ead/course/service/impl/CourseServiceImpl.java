@@ -5,6 +5,7 @@ import com.ead.course.exception.NotFoundExcepetion;
 import com.ead.course.model.Course;
 import com.ead.course.model.Lesson;
 import com.ead.course.model.Module;
+import com.ead.course.model.User;
 import com.ead.course.repository.CourseRepository;
 import com.ead.course.repository.LessonRepository;
 import com.ead.course.repository.ModuleRepository;
@@ -56,6 +57,7 @@ public class CourseServiceImpl implements CourseService {
             moduleRepository.deleteAll(modules);
         }
 
+        courseRepository.deleteCourseUserByCourse(course.getCourseId());
         courseRepository.delete(course);
 
     }
@@ -91,5 +93,16 @@ public class CourseServiceImpl implements CourseService {
         BeanUtils.copyProperties(courseRecordDto, course);
         course.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return courseRepository.save(course);
+    }
+
+    @Override
+    public boolean existsByCourseAndUser(UUID courseId, UUID userId) {
+        return courseRepository.existsByCourseAndUser(courseId, userId);
+    }
+
+    @Transactional
+    @Override
+    public void saveSubscriptionUserInCourse(Course course, User user) {
+        courseRepository.saveCourseUser(course.getCourseId(), user.getUserId());
     }
 }

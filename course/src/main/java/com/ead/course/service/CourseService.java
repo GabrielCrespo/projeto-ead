@@ -2,6 +2,7 @@ package com.ead.course.service;
 
 import com.ead.course.dto.CourseRecordDto;
 import com.ead.course.model.Course;
+import com.ead.course.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,4 +23,8 @@ public interface CourseService {
     Optional<Course> findById(UUID courseId);
 
     Course update(CourseRecordDto courseRecordDto, Course course);
+
+    boolean existsByCourseAndUser(UUID courseId, UUID userId);
+
+    void saveSubscriptionUserInCourse(Course course, User user);
 }

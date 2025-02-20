@@ -1,7 +1,9 @@
 package com.ead.course.validation;
 
 import com.ead.course.dto.CourseRecordDto;
+import com.ead.course.enums.UserType;
 import com.ead.course.service.CourseService;
+import com.ead.course.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,9 +21,12 @@ public class CourseValidator implements Validator {
 
     private final CourseService courseService;
 
-    public CourseValidator(Validator validator, CourseService courseService) {
+    private final UserService userService;
+
+    public CourseValidator(Validator validator, CourseService courseService, UserService userService) {
         this.validator = validator;
         this.courseService = courseService;
+        this.userService = userService;
     }
 
     @Override
@@ -48,11 +53,11 @@ public class CourseValidator implements Validator {
     }
 
     private void validateUserInstructor(UUID userInstructor, Errors errors) {
-//        ResponseEntity<UserRecordDto> responseUserInstructor = authUserClient.getOneUserById(userInstructor);
-//        if (UserType.STUDENT.equals(responseUserInstructor.getBody().userType())
-//                || UserType.USER.equals(responseUserInstructor.getBody().userType())) {
-//            errors.rejectValue("userInstructor", "userInstructorError", "User must be INSTRUCTOR or ADMIN.");
-//            LOGGER.error("Error validation userInstructor: {}", userInstructor);
-//        }
+        var user = userService.findById(userInstructor);
+        if (UserType.STUDENT.toString().equals(user.getUserType())
+                || UserType.USER.toString().equals(user.getUserType())) {
+            errors.rejectValue("userInstructor", "userInstructorError", "User must be INSTRUCTOR or ADMIN.");
+            LOGGER.error("Error validation userInstructor: {}", userInstructor);
+        }
     }
 }
