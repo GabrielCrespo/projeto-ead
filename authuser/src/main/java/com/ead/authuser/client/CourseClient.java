@@ -2,7 +2,7 @@ package com.ead.authuser.client;
 
 import com.ead.authuser.dto.CourseRecordDto;
 import com.ead.authuser.dto.ResponsePageDto;
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,8 @@ public class CourseClient {
         this.restClient = restClientBuilder.build();
     }
 
-    @Retry(name = "retryInstance", fallbackMethod = "retryFallback")
+    //    @Retry(name = "retryInstance", fallbackMethod = "retryFallback")
+    @CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "circuitbreakerfallback")
     public Page<CourseRecordDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
 
         String url = baseUrlCourse + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size="
@@ -53,10 +54,17 @@ public class CourseClient {
 
     }
 
-    public Page<CourseRecordDto> retryFallback(UUID userId, Pageable pageable, Throwable t) {
-        LOGGER.error("Inside retry retryFallback, cause - {}", t.toString());
+    public Page<CourseRecordDto> circuitbreakerfallback(UUID userId, Pageable pageable, Throwable t) {
+        LOGGER.error("Inside circuit breaker fallback, cause - {}", t.toString());
         List<CourseRecordDto> searchResult = new ArrayList<>();
         return new PageImpl<>(searchResult);
     }
+
+
+//    public Page<CourseRecordDto> retryFallback(UUID userId, Pageable pageable, Throwable t) {
+//        LOGGER.error("Inside retry retryFallback, cause - {}", t.toString());
+//        List<CourseRecordDto> searchResult = new ArrayList<>();
+//        return new PageImpl<>(searchResult);
+//    }
 
 }
